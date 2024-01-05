@@ -1,59 +1,46 @@
 import random
 
 import pygame
+from entities.Meteor import Meteor
+from game_constants.ScreenConstant import ScreenConstant
+from game_constants.AssetConstants import AssetsIMG, AssetsMUSIC
 
 # Initialize Pygame
 pygame.init()
 
 # Set the screen dimensions
-WIDTH, HEIGHT = 800, 600
-FPS = 60
-
-# Set the screen
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.set_mode((ScreenConstant.SCREEN_WIDTH.__float__(), ScreenConstant.SCREEN_HEIGHT.__float__()))
 
 # Initialisation de la clock
 clock = pygame.time.Clock()
 
 # Define the window icon
-icon = pygame.image.load("assets/sprites/meteor.png")
+icon = pygame.image.load(AssetsIMG.METEOR_IMG)
 pygame.display.set_icon(icon)
-
 # Set the caption
 pygame.display.set_caption("Météors")
 
 
-# objet meteors
-class Meteor(pygame.sprite.Sprite):
-    def __init__(self, image, x, y, speed):
-        super().__init__()
-        self.image = image
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-        self.speed = speed
-
-    def explode(self):
-        # Afficher une explosion à l'emplacement du météore
-        explosion_image = pygame.image.load("assets/sprites/Explosion.png").convert_alpha()
-        screen.blit(explosion_image, self.rect.center)
+def explode(self):
+    # Afficher une explosion à l'emplacement du météore
+    explosion_image = pygame.image.load(AssetsIMG.EXPLOSION_IMG).convert_alpha()
+    screen.blit(explosion_image, self.rect.center)
 
 
-def create_meteors(num_meteor, meteor_image, width, height):
+def create_meteors(num_meteor, width, height):
     meteors = pygame.sprite.Group()
     for i in range(num_meteor):
         x = random.randrange(width)
         y = random.randrange(-height, -100)
         speed = random.uniform(0.1, 0.5)
-        meteor = Meteor(meteor_image, x, y, speed)
+        meteor = Meteor(x, y, speed)
         meteors.add(meteor)
     return meteors
 
 
 # Load the images
-ship_image = pygame.image.load("assets/sprites/vaisseau.png").convert_alpha()
-missile_image = pygame.image.load("assets/sprites/missile.png").convert_alpha()
-meteor_image = pygame.image.load("assets/sprites/meteor.png").convert_alpha()
+ship_image = pygame.image.load(AssetsIMG.SHIP_IMG).convert_alpha()
+missile_image = pygame.image.load(AssetsIMG.MISSILE_IMG).convert_alpha()
 
 # Create the player sprite
 player_sprite = pygame.sprite.Sprite()
@@ -61,8 +48,8 @@ player_sprite.image = ship_image
 player_sprite.rect = player_sprite.image.get_rect()
 
 # Set the player's starting position
-player_sprite.rect.centerx = WIDTH / 2
-player_sprite.rect.bottom = HEIGHT - 10
+player_sprite.rect.centerx = ScreenConstant.SCREEN_WIDTH / 2
+player_sprite.rect.bottom = ScreenConstant.SCREEN_HEIGHT - 10
 
 # Set the speeds
 player_speed = 5
@@ -75,13 +62,13 @@ missile_group = pygame.sprite.Group()
 clock = pygame.time.Clock()
 
 # Load the background images
-background = pygame.image.load("assets/sprites/fond.png").convert()
-background2 = pygame.image.load("assets/sprites/fond.png").convert()
+background = pygame.image.load(AssetsIMG.BACKGROUND_IMG).convert()
+background2 = pygame.image.load(AssetsIMG.BACKGROUND_IMG).convert()
 background_y = 0
 background2_y = -background.get_height()
 
 # Load the music
-pygame.mixer.music.load("assets/musics/stranger-things-124008.mp3")
+pygame.mixer.music.load(AssetsMUSIC.MUSIC)
 
 # Play the music
 pygame.mixer.music.play(loops=-1)
@@ -93,14 +80,14 @@ move_timer = 0
 move_delay = 5  # Delay in milliseconds between movements
 
 num_meteor = 3
-meteor_group = create_meteors(num_meteor, meteor_image, WIDTH, HEIGHT)
+meteor_group = create_meteors(num_meteor, ScreenConstant.SCREEN_WIDTH,ScreenConstant.SCREEN_HEIGHT)
 
 # Game loop
 
 running = True
 while running:
     # Limitation de FPS
-    clock.tick(FPS)
+    clock.tick(ScreenConstant.FPS.__float__())
     # Handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -143,13 +130,13 @@ while running:
     # Keep the player on screen
     if player_sprite.rect.left < 0:
         player_sprite.rect.left = 0
-    elif player_sprite.rect.right > WIDTH:
-        player_sprite.rect.right = WIDTH
+    elif player_sprite.rect.right > ScreenConstant.SCREEN_WIDTH:
+        player_sprite.rect.right = ScreenConstant.SCREEN_WIDTH
 
     # Move the missiles
     for missile_sprite in missile_group:
         missile_sprite.rect.y -= missile_speed
-        if missile_sprite.rect.colliderect(pygame.Rect(0, 0, WIDTH, 0)):
+        if missile_sprite.rect.colliderect(pygame.Rect(0, 0, ScreenConstant.SCREEN_WIDTH.__float__(), 0)):
             # Le missile a touché le bord supérieur de l'écran
             # Remove the missile when it goes off screen
             missile_group.remove(missile_sprite)
