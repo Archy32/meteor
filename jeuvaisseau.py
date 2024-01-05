@@ -15,15 +15,15 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 # Initialisation de la clock
 clock = pygame.time.Clock()
 
-
 # Define the window icon
-icon = pygame.image.load("meteor.png")
+icon = pygame.image.load("assets/sprites/meteor.png")
 pygame.display.set_icon(icon)
 
 # Set the caption
 pygame.display.set_caption("Météors")
 
-#objet meteors
+
+# objet meteors
 class Meteor(pygame.sprite.Sprite):
     def __init__(self, image, x, y, speed):
         super().__init__()
@@ -35,8 +35,9 @@ class Meteor(pygame.sprite.Sprite):
 
     def explode(self):
         # Afficher une explosion à l'emplacement du météore
-        explosion_image = pygame.image.load("Explosion.png").convert_alpha()
+        explosion_image = pygame.image.load("assets/sprites/Explosion.png").convert_alpha()
         screen.blit(explosion_image, self.rect.center)
+
 
 def create_meteors(num_meteor, meteor_image, width, height):
     meteors = pygame.sprite.Group()
@@ -50,9 +51,9 @@ def create_meteors(num_meteor, meteor_image, width, height):
 
 
 # Load the images
-ship_image = pygame.image.load("vaisseau.png").convert_alpha()
-missile_image = pygame.image.load("missile.png").convert_alpha()
-meteor_image = pygame.image.load("meteor.png").convert_alpha()
+ship_image = pygame.image.load("assets/sprites/vaisseau.png").convert_alpha()
+missile_image = pygame.image.load("assets/sprites/missile.png").convert_alpha()
+meteor_image = pygame.image.load("assets/sprites/meteor.png").convert_alpha()
 
 # Create the player sprite
 player_sprite = pygame.sprite.Sprite()
@@ -74,13 +75,13 @@ missile_group = pygame.sprite.Group()
 clock = pygame.time.Clock()
 
 # Load the background images
-background = pygame.image.load("fond.png").convert()
-background2 = pygame.image.load("fond.png").convert()
+background = pygame.image.load("assets/sprites/fond.png").convert()
+background2 = pygame.image.load("assets/sprites/fond.png").convert()
 background_y = 0
 background2_y = -background.get_height()
 
 # Load the music
-pygame.mixer.music.load("stranger-things-124008.mp3")
+pygame.mixer.music.load("assets/musics/stranger-things-124008.mp3")
 
 # Play the music
 pygame.mixer.music.play(loops=-1)
@@ -93,7 +94,6 @@ move_delay = 5  # Delay in milliseconds between movements
 
 num_meteor = 3
 meteor_group = create_meteors(num_meteor, meteor_image, WIDTH, HEIGHT)
-
 
 # Game loop
 

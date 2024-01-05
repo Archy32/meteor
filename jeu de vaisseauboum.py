@@ -13,30 +13,31 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Meteors")
 
 # Define the window icon
-icon = pygame.image.load("meteor.png")
+icon = pygame.image.load("assets/sprites/meteor.png")
 pygame.display.set_icon(icon)
 
 # Load the music
-pygame.mixer.music.load("stranger-things-124008.mp3")
+pygame.mixer.music.load("assets/musics/stranger-things-124008.mp3")
 
 # Load the background images
-background = pygame.image.load("fond.png").convert()
-background2 = pygame.image.load("fond.png").convert()
+background = pygame.image.load("assets/sprites/fond.png").convert()
+background2 = pygame.image.load("assets/sprites/fond.png").convert()
 background_y = 0
 background2_y = -background.get_height()
 
 # Load the ship image
 ship_sprite = pygame.sprite.Sprite()
-ship_sprite.image = pygame.image.load("vaisseau.png").convert_alpha()
+ship_sprite.image = pygame.image.load("assets/sprites/vaisseau.png").convert_alpha()
 ship_sprite.rect = ship_sprite.image.get_rect()
 ship = ship_sprite.rect
-ship_protected = pygame.image.load("vaisseauhit.png").convert_alpha()
+ship_protected = pygame.image.load("assets/sprites/vaisseauhit.png").convert_alpha()
 
 # Load the meteor image
-meteor_image = pygame.image.load("meteor.png")
-meteor_detruit = pygame.image.load("meteor_explode.png")
+meteor_image = pygame.image.load("assets/sprites/meteor.png")
+meteor_detruit = pygame.image.load("assets/sprites/meteor_explode.png")
 
 # Initialize the position of the ship
+
 ship_x = (width - ship.get_width()) / 2
 ship_y = height - ship.get_height() - 10
 
@@ -44,7 +45,7 @@ ship_y = height - ship.get_height() - 10
 ship_speed = 0.2
 
 # Load the missile image
-missile = pygame.image.load("missile.png").convert_alpha()
+missile = pygame.image.load("assets/sprites/missile.png").convert_alpha()
 
 # Initialize the position and speed of the missile
 missile_x = 0
