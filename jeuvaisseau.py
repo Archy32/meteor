@@ -1,7 +1,10 @@
 import random
 
 import pygame
+
+
 from entities.Meteor import Meteor
+from entities.Missile import Missile
 from game_constants.ScreenConstant import ScreenConstant
 from game_constants.AssetConstants import AssetsIMG, AssetsMUSIC
 
@@ -21,21 +24,13 @@ pygame.display.set_icon(icon)
 pygame.display.set_caption("Météors")
 
 
-def explode(self):
+def explode(meteor):
     # Afficher une explosion à l'emplacement du météore
     explosion_image = pygame.image.load(AssetsIMG.EXPLOSION_IMG).convert_alpha()
-    screen.blit(explosion_image, self.rect.center)
+    screen.blit(explosion_image, meteor.rect)
 
 
-def create_meteors(num_meteor, width, height):
-    meteors = pygame.sprite.Group()
-    for i in range(num_meteor):
-        x = random.randrange(width)
-        y = random.randrange(-height, -100)
-        speed = random.uniform(0.1, 0.5)
-        meteor = Meteor(x, y, speed)
-        meteors.add(meteor)
-    return meteors
+
 
 
 # Load the images
@@ -77,10 +72,20 @@ pygame.mixer.music.play(loops=-1)
 move_left = False
 move_right = False
 move_timer = 0
-move_delay = 5  # Delay in milliseconds between movements
-
+move_delay = 5 # Delay in milliseconds between movements
 num_meteor = 3
-meteor_group = create_meteors(num_meteor, ScreenConstant.SCREEN_WIDTH,ScreenConstant.SCREEN_HEIGHT)
+
+
+met_group = pygame.sprite.Group()
+def create_meteors(count, width, height):
+    for i in range(count):
+        start_x = random.randrange(0,width - 50)
+        start_y = random.randrange(0, height - 50)
+        speed  = random.uniform(0.1, 0.5)
+        met = Meteor(start_x,start_y, speed).sprite
+        met_group.add(met)
+
+create_meteors(num_meteor, ScreenConstant.SCREEN_WIDTH,ScreenConstant.SCREEN_HEIGHT)
 
 # Game loop
 
@@ -88,6 +93,9 @@ running = True
 while running:
     # Limitation de FPS
     clock.tick(ScreenConstant.FPS.__float__())
+
+    if len(met_group) < num_meteor:
+        create_meteors(num_meteor - len(met_group), ScreenConstant.SCREEN_WIDTH, ScreenConstant.SCREEN_HEIGHT)
     # Handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -96,16 +104,10 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 running = False
             elif event.key == pygame.K_SPACE:
-                # Create a new missile sprite
-                missile_sprite = pygame.sprite.Sprite()
-                missile_sprite.image = missile_image
-                missile_sprite.rect = missile_sprite.image.get_rect()
-
-                # Set the missile's starting position
-                missile_sprite.rect.centerx = player_sprite.rect.centerx
-                missile_sprite.rect.bottom = player_sprite.rect.top
+                # Create a new missile
+                missile = Missile(player_sprite.rect.centerx, player_sprite.rect.top)
                 # Add the missile to the group
-                missile_group.add(missile_sprite)
+                missile_group.add(missile.sprite)
             if event.key == pygame.K_LEFT:
                 move_left = True
                 move_timer = pygame.time.get_ticks()
@@ -142,14 +144,14 @@ while running:
             missile_group.remove(missile_sprite)
 
     # Handle missile-meteor collision
-    collisions = pygame.sprite.groupcollide(missile_group, meteor_group, True, True)
-    for meteor in collisions.values():
-        for m in meteor:
-            m.explode()
+    collisions = pygame.sprite.groupcollide(missile_group, met_group, True, True)
+    for meto in collisions.values():
+        for m in meto:
+            explode(m)
 
     # Move the meteors
-    for meteor in meteor_group:
-        meteor.rect.y += meteor.speed
+    for meteor in met_group:
+         meteor.rect.y += meteor.speed
 
     # Draw the background
     screen.blit(background, (0, background_y))
@@ -162,7 +164,7 @@ while running:
     background2_y += 1
 
     # Draw the meteors
-    meteor_group.draw(screen)
+    met_group.draw(screen)
 
     # Draw the missiles
     missile_group.draw(screen)
